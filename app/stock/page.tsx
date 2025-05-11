@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Search, Filter, AlertTriangle } from "lucide-react"
 import Image from "next/image"
 import { fetchAllProducts, fetchLowStockProducts, fetchExpiringProducts } from "@/app/actions/product-actions"
+import { format } from "date-fns"
 
 export default async function StockPage() {
   const { data: products = [] } = await fetchAllProducts()
@@ -33,6 +34,11 @@ export default async function StockPage() {
     const diffTime = expiryDate.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     return diffDays <= 7
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return format(date, "MMM d, yyyy")
   }
 
   return (
@@ -128,7 +134,7 @@ export default async function StockPage() {
                     <TableCell>{product.stock} units</TableCell>
                     <TableCell>{getStockStatus(product.stock, product.threshold)}</TableCell>
                     <TableCell className="flex items-center gap-1">
-                      {product.expiryDate}
+                      {formatDate(product.expiryDate)}
                       {isExpiringSoon(product.expiryDate) && <AlertTriangle className="h-4 w-4 text-amber-500" />}
                     </TableCell>
                   </TableRow>

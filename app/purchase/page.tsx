@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { Plus, Search } from "lucide-react"
 import { fetchAllPurchaseOrders } from "../actions/purchase-actions"
+import { format } from "date-fns"
 
 export default async function PurchasePage() {
   const { data: purchaseOrders = [] } = await fetchAllPurchaseOrders()
@@ -29,6 +30,11 @@ export default async function PurchasePage() {
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return format(date, "MMM d, yyyy")
   }
 
   return (
@@ -101,7 +107,7 @@ export default async function PurchasePage() {
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.id}</TableCell>
                     <TableCell>{order.supplier}</TableCell>
-                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{formatDate(order.date)}</TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>
                     <TableCell className="text-right">${order.total.toFixed(2)}</TableCell>
                   </TableRow>

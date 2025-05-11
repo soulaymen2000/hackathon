@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { Search, Download } from "lucide-react"
 import { fetchAllSalesOrders } from "../actions/sales-actions"
+import { format } from "date-fns"
 
 export default async function SalesPage() {
   const { data: salesOrders = [] } = await fetchAllSalesOrders()
@@ -33,6 +34,11 @@ export default async function SalesPage() {
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return format(date, "MMM d, yyyy")
   }
 
   return (
@@ -114,7 +120,7 @@ export default async function SalesPage() {
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.id}</TableCell>
                     <TableCell>{order.customerId}</TableCell>
-                    <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{formatDate(order.date)}</TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>
                     <TableCell className="text-right">${order.total.toFixed(2)}</TableCell>
                   </TableRow>
